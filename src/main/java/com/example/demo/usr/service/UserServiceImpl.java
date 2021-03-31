@@ -18,8 +18,6 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.cmm.enm.Swear;
 import com.example.demo.cmm.service.AbstractService;
-import com.example.demo.usr.domain.EncryptionUtils;
-import com.example.demo.usr.domain.MailDto;
 import com.example.demo.usr.domain.User;
 import com.example.demo.usr.domain.UserDto;
 import com.example.demo.usr.repositoy.UserRepository;
@@ -145,46 +143,11 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
 	
 	
 	
-	@Override
-	public void updatePassword(String str, String userEmail) {
-		String pw = EncryptionUtils.encryptMD5(str);
-		String id = userRepository.findIdByEmail(userEmail);
-		userRepository.updateUserPassword(id, pw);
-	}
-
-	@Override
-	public String createTempPassword() {
-		Random random = new Random();
-		return IntStream.iterate(0, i -> (char) (random.nextInt('Z' - 'A') + 'A')).limit(10)
-				.collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append).toString();
-	}
 
 
-	@Override
-	public MailDto createMailAndChangePassword(String userEmail, String userName) {
-		if (userEmail != null && userName != null) {
-			String str = createTempPassword();
-			MailDto mailDto = new MailDto();
-			mailDto.setAddress(userEmail);
-			mailDto.setTitle(String.format("%s님의 임시비밀번호 관련 메일입니다.", userName));
-			mailDto.setMessage(String.format("안녕하세요 %s님. 임시비밀번호 안내 관련 이메일입니다. 고객님의 임시 비밀번호는 %s 입니다.", userName, str));
-			updatePassword(str, userEmail);
-			return mailDto;
-		}
-		return null;
-	}
 
 	
-	@Override
-	public void mailSend(MailDto mailDto) {
-		System.out.println("이멜 전송 완료!");
-		SimpleMailMessage message = new SimpleMailMessage();
-		message.setTo(mailDto.getAddress());
-		message.setFrom("jjwjun10@gmail.com");
-		message.setSubject(mailDto.getTitle());
-		message.setText(mailDto.getMessage());
-		mailSender.send(message);
-	}
+
 	
 	public Map<?, ?> userDetail(UserDto usrDto) {
 		var map = new HashMap<>();
@@ -194,10 +157,6 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
 	
 	@Override public UserDto create(UserDto user) { return null; }
 	@Override public User getOne(long id) { return userRepository.getOne(id); }
-	@Override public long count() { return 0; }
-	@Override public Optional<User> findById(long id) {	return null; }
-	@Override public boolean existsById(long id) { return false; }
-	@Override public boolean emailCheck(User user) { return false; }
 	@Override public boolean idCheck(User user) { return false; }
 
 
@@ -208,6 +167,36 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
 			return Swear.KOREAN_SWEAR_LIST.getSwearList().stream()
 					.anyMatch(x -> Pattern.compile(reg).matcher(word).matches());
 		}
+		return false;
+	}
+
+	@Override
+	public boolean emailCheck(User user) {
+		return false;
+	}
+
+	@Override
+	public void updatePassword(String str, String userEmail) {
+		
+	}
+
+	@Override
+	public String createTempPassword() {
+		return null;
+	}
+
+	@Override
+	public long count() {
+		return 0;
+	}
+
+	@Override
+	public Optional<User> findById(long id) {
+		return null;
+	}
+
+	@Override
+	public boolean existsById(long id) {
 		return false;
 	}
 

@@ -109,12 +109,7 @@ public class UserController extends AbstractController<User> {
 	}
 
 	
-	@PostMapping("/check/findPw/sendEmail")
-	public @ResponseBody void sendEmail(@RequestBody User user) {
-		MailDto dto = userService.createMailAndChangePassword(user.getUsrEmail(), user.getUsrName());
-		userService.mailSend(dto);
-		logger.info("Send temporary password");
-	}
+	
 	
 	@GetMapping("/count")
 	public ResponseEntity<Long> count() {
