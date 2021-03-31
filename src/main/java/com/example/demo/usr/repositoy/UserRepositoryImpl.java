@@ -51,8 +51,6 @@ public class UserRepositoryImpl extends QuerydslRepositorySupport implements IUs
 	
 	@Override
 	public boolean checkId(String id) {
-		ModelMapper modelMapper = new ModelMapper();
-//		modelMapper.map(modelMapper, null)
 		return queryFactory.selectFrom(user)
 				.where(user.usrId.eq(id))
 				.fetchOne() != null ? true : false;
@@ -88,10 +86,6 @@ public class UserRepositoryImpl extends QuerydslRepositorySupport implements IUs
 
 	@Override
 	public Optional<User> updateProfile(String email, String password) {
-		queryFactory.select(user, payment)
-		.from(payment)
-		.join(payment.user, user)
-		.where(user.usrEmail.eq("aa")).fetch();
 		
 		return Optional.ofNullable(
 				queryFactory.selectFrom(user)
